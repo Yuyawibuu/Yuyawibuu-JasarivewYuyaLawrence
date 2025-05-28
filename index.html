@@ -1,0 +1,2286 @@
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yuya Lawrence - Jasa Review Server SA-MP Profesional</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+
+        :root {
+            /* Light Mode Colors (default for dark theme base) */
+            --dark-bg: #0a0a0a;
+            --neon-purple: #9c27b0;
+            --neon-blue: #00e5ff;
+            --text-color: #e0e0e0;
+            --card-bg-opacity: rgba(255, 255, 255, 0.05);
+            --border-color-opacity: rgba(156, 39, 176, 0.3);
+            --box-shadow-color: rgba(0, 229, 255, 0.1);
+            --input-bg-opacity: rgba(0, 0, 0, 0.5);
+            --header-bg-opacity: rgba(10, 10, 10, 0.8);
+        }
+
+        /* Dark Mode Colors (for toggle, essentially the same but demonstrates toggle capability) */
+        body.light-mode {
+            --dark-bg: #f0f0f0;
+            --neon-purple: #6a1a7b; /* Slightly muted */
+            --neon-blue: #008c99; /* Slightly muted */
+            --text-color: #333;
+            --card-bg-opacity: rgba(0, 0, 0, 0.05);
+            --border-color-opacity: rgba(106, 26, 123, 0.3);
+            --box-shadow-color: rgba(0, 140, 153, 0.1);
+            --input-bg-opacity: rgba(255, 255, 255, 0.5);
+            --header-bg-opacity: rgba(255, 255, 255, 0.8);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: var(--dark-bg);
+            color: var(--text-color);
+            line-height: 1.6;
+            overflow-x: hidden;
+            transition: background-color 0.5s ease, color 0.5s ease;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* --- Progress Scroll Indicator --- */
+        #progressBar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 5px;
+            width: 0%;
+            background: linear-gradient(90deg, var(--neon-purple), var(--neon-blue));
+            z-index: 10000;
+            transition: width 0.1s ease-out;
+            box-shadow: 0 0 10px var(--neon-blue);
+        }
+        /* CSS untuk elemen input, textarea, DAN select secara umum */
+.form-group input,
+.form-group textarea,
+.form-group select {
+    width: 100%;
+    padding: 18px 20px; /* Consistent padding */
+    background-color: var(--input-bg-opacity);
+    border: 2px solid var(--neon-purple);
+    border-radius: 8px;
+    color: var(--text-color); /* Default text color for input fields */
+    font-size: 1em;
+    outline: none;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease, background-color 0.5s ease;
+    -webkit-appearance: none; /* Removes default styling for select in Safari/Chrome */
+    -moz-appearance: none; /* Removes default styling for select in Firefox */
+    appearance: none; /* Removes default styling for select */
+}
+
+/* Style saat select box mendapatkan fokus */
+.form-group select:focus {
+    border-color: var(--neon-blue);
+    box-shadow: 0 0 15px rgba(0, 229, 255, 0.5);
+}
+
+/* Wrapper untuk select box, untuk memposisikan panah custom */
+.select-wrapper {
+    position: relative;
+}
+
+/* Panah dropdown custom menggunakan Font Awesome */
+.select-wrapper::after {
+    content: '\f078'; /* Font Awesome down arrow */
+    font-family: 'Font Awesome 6 Free';
+    font-weight: 900; /* Required for Solid icons */
+    position: absolute;
+    top: 50%;
+    right: 20px;
+    transform: translateY(-50%);
+    color: var(--neon-blue);
+    pointer-events: none; /* Agar tidak mengganggu klik pada select */
+    transition: color 0.3s ease;
+}
+
+/* Mengubah warna panah saat select box fokus (opsional) */
+.form-group select:focus ~ .select-wrapper::after {
+     color: var(--neon-purple);
+}
+
+/* Mengatur warna teks select: default untuk placeholder */
+.form-group select {
+    color: var(--placeholder-color);
+}
+/* Mengatur warna teks select saat opsi valid dipilih */
+.form-group select.has-content {
+    color: var(--text-color);
+}
+
+/* Style untuk opsi placeholder yang dinonaktifkan di dalam daftar dropdown */
+.form-group select option[value=""][disabled] {
+    color: var(--placeholder-color);
+}
+
+/* Style umum untuk semua opsi di dalam daftar dropdown */
+.form-group select option {
+    background-color: var(--dark-bg); /* Menyamakan background dropdown dengan tema */
+    color: var(--text-color); /* Warna teks untuk opsi */
+    padding: 10px; /* Padding untuk opsi agar mudah dibaca */
+}
+
+/* Animasi label untuk select saat fokus atau memiliki isi */
+.form-group select:focus + label,
+.form-group select.has-content + label {
+    top: -10px;
+    left: 15px;
+    font-size: 0.8em;
+    color: var(--neon-blue);
+    background-color: var(--dark-bg);
+    border-radius: 3px;
+    z-index: 1;
+}
+
+/* Animasi label untuk select yang memiliki isi tetapi tidak fokus */
+.form-group select.has-content:not(:focus) + label {
+     top: -10px;
+    left: 15px;
+    font-size: 0.8em;
+    color: var(--neon-blue); /* Atau var(--text-color) jika diinginkan saat tidak fokus */
+    background-color: var(--dark-bg);
+    border-radius: 3px;
+    z-index: 1;
+}
+  #commentsSection {
+    max-width: 800px;  /* atur lebar maksimal container */
+    width: 100%;
+    margin: 20px auto; /* tengah horizontal dan beri jarak atas bawah */
+    font-family: Arial, sans-serif;
+  }
+
+  #commentsSection ul {
+    list-style: none;
+    padding: 0;
+    margin-top: 10px;
+  }
+
+  #commentsSection li {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    margin-bottom: 15px;
+    width: 100%;  /* penuh container */
+  }
+
+  #commentsSection .avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    flex-shrink: 0; /* avatar tidak menyusut */
+    object-fit: cover; /* supaya gambar avatar proporsional */
+  }
+
+  #commentsSection .comment-text {
+    flex: 1;
+    min-width: 300px;  /* lebar minimum area komentar */
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    white-space: normal;
+    max-width: 100%;
+    background-color: #00000093;
+    padding: 8px 12px;
+    border-radius: 6px;
+  }
+
+  #commentsSection .comment-text strong {
+    display: block;
+    margin-bottom: 4px;
+    color: #00d2ee;
+  }
+
+  #commentsSection .comment-time {
+    font-size: 12px;
+    color: #999;
+    margin-top: 4px;
+  }
+        /* --- Background Video/Image --- */
+        .background-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7); /* Dark overlay */
+            z-index: -1;
+        }
+
+        #bg-video {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            min-width: 100%;
+            min-height: 100%;
+            width: auto;
+            height: auto;
+            transform: translateX(-50%) translateY(-50%);
+            z-index: -2;
+            object-fit: cover; /* Ensures video covers the entire screen */
+            filter: brightness(0.7); /* Make background darker */
+        }
+        /* Fallback for video not loading or on mobile */
+        .hero {
+            background: linear-gradient(rgba(10, 10, 10, 0.8), rgba(10, 10, 10, 0.8)), url('https://source.unsplash.com/random/1920x1080?cyberpunk,city,neon') no-repeat center center/cover;
+            background-attachment: fixed; /* Parallax effect for fallback image */
+        }
+
+        /* --- Header / Navbar --- */
+        header {
+            background-color: var(--header-bg-opacity);
+            padding: 20px 0;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+            backdrop-filter: blur(5px);
+            box-shadow: 0 2px 10px rgba(0, 229, 255, 0.2);
+            transition: background-color 0.5s ease;
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.8em;
+            font-weight: 700;
+            color: var(--neon-blue);
+            text-shadow: 0 0 8px var(--neon-blue), 0 0 15px var(--neon-purple);
+            text-decoration: none;
+            transition: color 0.5s ease, text-shadow 0.5s ease;
+        }
+
+        .nav-links {
+            list-style: none;
+            display: flex;
+        }
+
+        .nav-links li {
+            margin-left: 30px;
+        }
+
+        .nav-links a {
+            color: var(--text-color);
+            text-decoration: none;
+            font-weight: 600;
+            position: relative;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--neon-purple), var(--neon-blue));
+            left: 0;
+            bottom: -5px;
+            transition: width 0.3s ease-in-out;
+        }
+
+        .nav-links a:hover {
+            color: var(--neon-blue);
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .menu-toggle {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
+            width: 30px; /* Lebar menu toggle */
+            height: 22px; /* Tinggi menu toggle */
+            justify-content: space-between;
+        }
+
+        .menu-toggle span {
+            height: 3px;
+            width: 100%;
+            background-color: var(--neon-blue);
+            border-radius: 2px;
+            transition: all 0.3s ease-in-out;
+        }
+
+        .menu-toggle.active span:nth-child(1) {
+            transform: rotate(-45deg) translate(-5px, 6px);
+        }
+
+        .menu-toggle.active span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .menu-toggle.active span:nth-child(3) {
+            transform: rotate(45deg) translate(-5px, -6px);
+        }
+
+        .header-controls {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .mode-toggle, .lang-toggle {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(0, 229, 255, 0.3);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 10px rgba(0, 229, 255, 0.2);
+            color: var(--text-color);
+            font-size: 1.1em;
+        }
+
+        .mode-toggle:hover, .lang-toggle:hover {
+            background: var(--neon-blue);
+            color: var(--dark-bg);
+            box-shadow: 0 0 20px var(--neon-blue);
+            transform: scale(1.05);
+        }
+
+        /* --- Hero Section --- */
+        .hero {
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            /* Fallback background, will be covered by video */
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at center, rgba(0, 229, 255, 0.1), transparent 70%);
+            animation: pulse-glow 5s infinite alternate;
+            z-index: 0; /* Ensure it's above video/image but below content */
+        }
+
+        @keyframes pulse-glow {
+            0% { transform: scale(1); opacity: 0.8; }
+            100% { transform: scale(1.1); opacity: 1; }
+        }
+
+        .hero-content {
+            z-index: 1;
+            padding: 20px;
+            animation: fadeIn 1s ease-out;
+        }
+
+        .hero h1 {
+            font-size: 3.5em;
+            color: var(--neon-blue);
+            margin-bottom: 15px;
+            text-shadow: 0 0 10px var(--neon-blue), 0 0 20px var(--neon-purple);
+            animation: text-glow 1.5s infinite alternate;
+            transition: color 0.5s ease, text-shadow 0.5s ease;
+        }
+
+        @keyframes text-glow {
+            0% { text-shadow: 0 0 5px var(--neon-blue), 0 0 10px var(--neon-purple); }
+            100% { text-shadow: 0 0 15px var(--neon-blue), 0 0 25px var(--neon-purple); }
+        }
+
+        .hero p {
+            font-size: 1.5em;
+            color: var(--text-color);
+            margin-bottom: 30px;
+            text-shadow: 0 0 5px rgba(0, 229, 255, 0.5);
+        }
+
+        .cta-button {
+            background: linear-gradient(45deg, var(--neon-purple), var(--neon-blue));
+            color: var(--dark-bg);
+            padding: 15px 30px;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.2em;
+            font-weight: 700;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s ease;
+            text-decoration: none;
+            display: inline-block;
+            box-shadow: 0 0 15px var(--neon-purple);
+            transition: background 0.5s ease, color 0.5s ease, box-shadow 0.5s ease;
+        }
+
+        .cta-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: all 0.4s ease;
+        }
+
+        .cta-button:hover::before {
+            left: 100%;
+        }
+
+        .cta-button:hover {
+            box-shadow: 0 0 25px var(--neon-blue), 0 0 40px var(--neon-purple);
+            transform: translateY(-3px);
+        }
+
+        /* --- Sections General Style & Scroll Reveal --- */
+        section {
+            padding: 100px 0;
+            opacity: 0;
+            transform: translateY(50px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        }
+
+        section.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        section h2 {
+            font-size: 2.8em;
+            text-align: center;
+            margin-bottom: 60px;
+            color: var(--neon-blue);
+            text-shadow: 0 0 8px var(--neon-blue), 0 0 15px var(--neon-purple);
+            position: relative;
+            transition: color 0.5s ease, text-shadow 0.5s ease;
+        }
+
+        section h2::after {
+            content: '';
+            position: absolute;
+            width: 80px;
+            height: 4px;
+            background: linear-gradient(90deg, var(--neon-purple), var(--neon-blue));
+            left: 50%;
+            transform: translateX(-50%);
+            bottom: -15px;
+            border-radius: 2px;
+        }
+
+        /* --- Statistik/Counter Section --- */
+        .stats-grid {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            gap: 30px;
+            text-align: center;
+        }
+
+        .stat-item {
+            background-color: var(--card-bg-opacity);
+            backdrop-filter: blur(10px); /* Glassmorphism */
+            border: 2px solid var(--border-color-opacity);
+            border-radius: 15px;
+            padding: 30px;
+            flex: 1;
+            min-width: 250px;
+            max-width: 30%;
+            box-shadow: 0 0 20px var(--box-shadow-color);
+            transition: all 0.4s ease;
+        }
+
+        .stat-item:hover {
+            transform: translateY(-10px);
+            border-color: var(--neon-blue);
+            box-shadow: 0 0 30px rgba(0, 229, 255, 0.4), 0 0 50px rgba(156, 39, 176, 0.4);
+        }
+
+        .stat-item .icon {
+            font-size: 3em;
+            color: var(--neon-blue);
+            margin-bottom: 15px;
+            text-shadow: 0 0 10px var(--neon-blue);
+        }
+
+        .stat-item .number {
+            font-size: 3.5em;
+            font-weight: 700;
+            color: var(--neon-purple);
+            text-shadow: 0 0 15px var(--neon-purple);
+            margin-bottom: 10px;
+        }
+
+        .stat-item .label {
+            font-size: 1.2em;
+            color: var(--text-color);
+        }
+
+        /* --- Portofolio --- */
+        .portfolio-slider {
+            position: relative;
+            overflow: hidden;
+            width: 100%;
+            max-width: 900px;
+            margin: 0 auto;
+            border-radius: 15px;
+            box-shadow: 0 0 30px var(--box-shadow-color);
+            background-color: var(--card-bg-opacity);
+            backdrop-filter: blur(10px); /* Glassmorphism */
+            border: 2px solid var(--border-color-opacity);
+            padding: 20px;
+            transition: background-color 0.5s ease, border-color 0.5s ease, box-shadow 0.5s ease;
+        }
+
+        .slider-wrapper {
+            display: flex;
+            transition: transform 0.5s ease-in-out;
+        }
+
+        .slider-item {
+            min-width: 100%;
+            text-align: center;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .slider-item img {
+            width: 100%;
+            max-height: 450px;
+            object-fit: cover;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            border: 2px solid var(--neon-blue);
+            box-shadow: 0 0 15px rgba(0, 229, 255, 0.4);
+            cursor: pointer; /* Indicate it's clickable */
+            transition: all 0.3s ease;
+        }
+        .slider-item img:hover {
+            transform: scale(1.02);
+            box-shadow: 0 0 25px var(--neon-blue);
+        }
+
+        .slider-item h3 {
+            font-size: 1.8em;
+            color: var(--neon-blue);
+            margin-bottom: 10px;
+            transition: color 0.5s ease;
+        }
+
+        .slider-item p {
+            color: var(--text-color);
+            font-size: 1.1em;
+        }
+
+        .slider-nav {
+            position: absolute;
+            top: 50%;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            transform: translateY(-50%);
+            padding: 0 10px;
+        }
+
+        .slider-btn {
+            background-color: rgba(156, 39, 176, 0.7);
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 50%;
+            font-size: 1.5em;
+            cursor: pointer;
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 0 10px var(--neon-purple);
+        }
+
+        .slider-btn:hover {
+            background-color: var(--neon-blue);
+            box-shadow: 0 0 20px var(--neon-blue);
+        }
+
+        /* Search Bar (for Portofolio) */
+        .search-bar {
+            text-align: center;
+            margin-bottom: 30px;
+            margin-top: 40px;
+        }
+        .search-bar input {
+            width: 100%;
+            max-width: 500px;
+            padding: 12px 20px;
+            background-color: var(--input-bg-opacity);
+            backdrop-filter: blur(5px);
+            border: 2px solid var(--neon-purple);
+            border-radius: 50px;
+            color: var(--text-color);
+            font-size: 1em;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+        .search-bar input:focus {
+            border-color: var(--neon-blue);
+            box-shadow: 0 0 15px rgba(0, 229, 255, 0.5);
+        }
+        .search-bar input::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        /* --- Paket Harga --- */
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+            justify-content: center;
+        }
+
+        .price-card {
+            background-color: var(--card-bg-opacity);
+            backdrop-filter: blur(10px); /* Glassmorphism */
+            border: 2px solid var(--border-color-opacity);
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s ease;
+            box-shadow: 0 0 20px var(--box-shadow-color);
+        }
+
+        .price-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, rgba(156, 39, 176, 0.1), rgba(0, 229, 255, 0.1));
+            z-index: -1;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        .price-card:hover::before {
+            opacity: 1;
+        }
+
+        .price-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--neon-blue);
+            box-shadow: 0 0 30px rgba(0, 229, 255, 0.4), 0 0 50px rgba(156, 39, 176, 0.4);
+        }
+
+        .price-card h3 {
+            font-size: 2em;
+            color: var(--neon-blue);
+            margin-bottom: 20px;
+            text-shadow: 0 0 5px var(--neon-blue);
+            transition: color 0.5s ease, text-shadow 0.5s ease;
+        }
+
+        .price-card .price {
+            font-size: 2.5em;
+            font-weight: 700;
+            color: var(--neon-purple);
+            margin-bottom: 25px;
+            text-shadow: 0 0 10px var(--neon-purple);
+            transition: color 0.5s ease, text-shadow 0.5s ease;
+        }
+
+        .price-card ul {
+            list-style: none;
+            margin-bottom: 30px;
+        }
+
+        .price-card ul li {
+            margin-bottom: 10px;
+            color: var(--text-color);
+            font-size: 1.1em;
+        }
+
+        .price-card ul li::before {
+            content: '✓ ';
+            color: var(--neon-blue);
+            font-weight: bold;
+        }
+
+        .price-card .cta-button {
+            padding: 12px 25px;
+            font-size: 1em;
+            border-radius: 30px;
+        }
+
+        /* --- Testimoni Klien --- */
+        .testimonial-carousel {
+            position: relative;
+            overflow: hidden;
+            max-width: 800px;
+            margin: 0 auto;
+            border-radius: 15px;
+            box-shadow: 0 0 30px var(--box-shadow-color);
+            background-color: var(--card-bg-opacity);
+            backdrop-filter: blur(10px); /* Glassmorphism */
+            border: 2px solid var(--border-color-opacity);
+            padding: 20px;
+            transition: background-color 0.5s ease, border-color 0.5s ease, box-shadow 0.5s ease;
+        }
+
+        .carousel-wrapper {
+            display: flex;
+            transition: transform 0.5s ease-in-out;
+        }
+
+        .testimonial-item {
+            min-width: 100%;
+            text-align: center;
+            padding: 20px;
+            box-sizing: border-box;
+            background-color: rgba(255, 255, 255, 0.03); /* Slight background for each testimonial */
+            border-radius: 10px;
+            border: 1px solid rgba(0, 229, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .testimonial-item:hover {
+            box-shadow: 0 0 25px rgba(0, 229, 255, 0.5);
+            border-color: var(--neon-purple);
+        }
+
+        .testimonial-item p {
+            font-style: italic;
+            font-size: 1.2em;
+            margin-bottom: 20px;
+            color: var(--text-color);
+            text-shadow: 0 0 5px rgba(0, 229, 255, 0.3);
+        }
+
+        .testimonial-item .client-name {
+            font-weight: 600;
+            color: var(--neon-blue);
+            font-size: 1.1em;
+            transition: color 0.5s ease;
+        }
+
+        .carousel-nav {
+            position: absolute;
+            top: 50%;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            transform: translateY(-50%);
+            padding: 0 10px;
+        }
+
+        .carousel-btn {
+            background-color: rgba(0, 229, 255, 0.7);
+            color: var(--dark-bg);
+            border: none;
+            padding: 10px 15px;
+            border-radius: 50%;
+            font-size: 1.5em;
+            cursor: pointer;
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 0 10px var(--neon-blue);
+        }
+
+        .carousel-btn:hover {
+            background-color: var(--neon-purple);
+            box-shadow: 0 0 20px var(--neon-purple);
+        }
+
+        /* --- Sertifikat/Review Showcase (New Slider) --- */
+        .showcase-slider {
+            position: relative;
+            overflow: hidden;
+            width: 100%;
+            max-width: 900px;
+            margin: 0 auto;
+            border-radius: 15px;
+            box-shadow: 0 0 30px var(--box-shadow-color);
+            background-color: var(--card-bg-opacity);
+            backdrop-filter: blur(10px); /* Glassmorphism */
+            border: 2px solid var(--border-color-opacity);
+            padding: 20px;
+            transition: background-color 0.5s ease, border-color 0.5s ease, box-shadow 0.5s ease;
+        }
+
+        .showcase-wrapper {
+            display: flex;
+            transition: transform 0.5s ease-in-out;
+        }
+
+        .showcase-item {
+            min-width: 100%;
+            text-align: center;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .showcase-item iframe { /* Updated for iframe */
+            width: 100%;
+            max-height: 450px; /* Kept for consistency if image was there, but iframe sets its own height */
+            height: 450px; /* Explicit height for the iframe */
+            border-radius: 10px;
+            margin-bottom: 15px;
+            border: 2px solid var(--neon-blue);
+            box-shadow: 0 0 15px rgba(0, 229, 255, 0.4);
+            display: block; /* Ensure it behaves like a block element */
+            margin-left: auto; /* Center the iframe */
+            margin-right: auto; /* Center the iframe */
+        }
+
+
+        .showcase-item h3 {
+            font-size: 1.8em;
+            color: var(--neon-blue);
+            margin-bottom: 10px;
+        }
+
+        .showcase-item p {
+            color: var(--text-color);
+            font-size: 1.1em;
+        }
+        .showcase-slider {
+    position: relative;
+    overflow: hidden;
+    width: 100%;
+    max-width: 900px;
+    margin: 0 auto;
+    border-radius: 15px;
+    box-shadow: 0 0 30px var(--box-shadow-color);
+    background-color: var(--card-bg-opacity);
+    backdrop-filter: blur(10px);
+    border: 2px solid var(--border-color-opacity);
+    padding: 20px;
+    transition: all 0.5s ease;
+}
+
+.showcase-wrapper {
+    display: flex;
+    transition: transform 0.5s ease-in-out;
+}
+
+.showcase-item {
+    min-width: 100%;
+    text-align: center;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.showcase-item iframe {
+    width: 100%;
+    height: 450px;
+    border-radius: 10px;
+    margin-bottom: 15px;
+    border: 2px solid var(--neon-blue);
+    box-shadow: 0 0 15px rgba(0, 229, 255, 0.4);
+}
+
+.showcase-item h3 {
+    font-size: 1.8em;
+    color: var(--neon-blue);
+    margin-bottom: 10px;
+}
+
+.showcase-item p {
+    color: var(--text-color);
+    font-size: 1.1em;
+}
+
+.showcase-nav {
+    position: absolute;
+    top: 50%;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    transform: translateY(-50%);
+    padding: 0 10px;
+}
+
+.showcase-btn {
+    background-color: rgba(156, 39, 176, 0.7);
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 50%;
+    font-size: 1.5em;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 0 10px var(--neon-purple);
+}
+
+.showcase-btn:hover {
+    background-color: var(--neon-blue);
+    box-shadow: 0 0 20px var(--neon-blue);
+}
+
+        /* --- Form Kontak --- */
+        .contact-form {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: var(--card-bg-opacity);
+            backdrop-filter: blur(10px); /* Glassmorphism */
+            padding: 40px;
+            border-radius: 15px;
+            border: 2px solid var(--border-color-opacity);
+            box-shadow: 0 0 30px var(--box-shadow-color);
+            position: relative;
+            transition: background-color 0.5s ease, border-color 0.5s ease, box-shadow 0.5s ease;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+            position: relative; /* Untuk label animasi */
+        }
+
+        .form-group label {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            color: rgba(255, 255, 255, 0.6);
+            pointer-events: none;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+
+        .form-group input:focus + label,
+        .form-group textarea:focus + label,
+        .form-group input.has-content + label, /* Added class for JS control */
+        .form-group textarea.has-content + label { /* Added class for JS control */
+            top: -10px;
+            left: 10px;
+            font-size: 0.8em;
+            color: var(--neon-blue);
+            background-color: var(--dark-bg);
+            padding: 0 5px;
+            border-radius: 3px;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 15px;
+            background-color: var(--input-bg-opacity);
+            border: 2px solid var(--neon-purple);
+            border-radius: 8px;
+            color: var(--text-color);
+            font-size: 1em;
+            outline: none;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease, background-color 0.5s ease;
+            padding-top: 25px; /* Tambahan padding untuk label */
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            border-color: var(--neon-blue);
+            box-shadow: 0 0 15px rgba(0, 229, 255, 0.5);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 120px;
+            padding-top: 25px;
+        }
+
+        /* Hide placeholder when label is active */
+        .form-group input:focus::placeholder,
+        .form-group textarea:focus::placeholder,
+        .form-group input.has-content::placeholder,
+        .form-group textarea.has-content::placeholder {
+            color: transparent;
+        }
+
+        .form-group .error-message {
+            color: #ff4d4d;
+            font-size: 0.9em;
+            margin-top: 5px;
+        }
+
+        /* --- Footer --- */
+        footer {
+            background-color: var(--header-bg-opacity);
+            padding: 40px 0;
+            text-align: center;
+            border-top: 1px solid rgba(0, 229, 255, 0.2);
+            color: var(--text-color);
+            transition: background-color 0.5s ease;
+        }
+
+        .footer-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .social-links {
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+
+        .social-links a {
+            color: var(--text-color);
+            font-size: 1.8em;
+            margin: 0 15px;
+            text-decoration: none;
+            transition: color 0.3s ease, text-shadow 0.3s ease;
+        }
+
+        .social-links a:hover {
+            color: var(--neon-blue);
+            text-shadow: 0 0 10px var(--neon-blue), 0 0 20px var(--neon-purple);
+        }
+
+        /* --- Video Modal --- */
+        .video-modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.9);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .video-modal-content {
+            position: relative;
+            margin: auto;
+            padding: 0;
+            width: 90%;
+            max-width: 900px;
+            background-color: transparent;
+        }
+
+        .video-modal-content iframe {
+            width: 100%;
+            height: 500px; /* Adjust height as needed */
+            display: block;
+            border: 2px solid var(--neon-blue);
+            box-shadow: 0 0 30px rgba(0, 229, 255, 0.7);
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 20px;
+            right: 35px;
+            color: #fff;
+            font-size: 40px;
+            font-weight: bold;
+            transition: 0.3s;
+            cursor: pointer;
+            z-index: 2001;
+        }
+
+        .close-modal:hover,
+        .close-modal:focus {
+            color: var(--neon-purple);
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        /* --- Chat Popup --- */
+        #chatPopup {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 300px;
+            background-color: var(--card-bg-opacity);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            box-shadow: 0 0 30px var(--box-shadow-color);
+            z-index: 1500;
+            display: none;
+            flex-direction: column;
+            overflow: hidden;
+            border: 1px solid var(--neon-blue);
+        }
+
+        #chatHeader {
+            background: linear-gradient(45deg, var(--neon-purple), var(--neon-blue));
+            color: var(--dark-bg);
+            padding: 15px;
+            border-top-left-radius: 15px;
+            border-top-right-radius: 15px;
+            font-weight: 600;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        #chatBody {
+            padding: 20px;
+            color: var(--text-color);
+            font-size: 0.95em;
+        }
+
+        #chatBody p {
+            margin-bottom: 10px;
+            animation: fadeIn 0.5s ease-out forwards;
+        }
+
+        #chatInputContainer {
+            padding: 10px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+        }
+
+        #chatInput {
+            flex-grow: 1;
+            padding: 8px 12px;
+            border-radius: 20px;
+            border: 1px solid var(--neon-purple);
+            background-color: var(--input-bg-opacity);
+            color: var(--text-color);
+            outline: none;
+            margin-right: 10px;
+        }
+
+        #chatSendBtn {
+            background-color: var(--neon-blue);
+            color: var(--dark-bg);
+            border: none;
+            border-radius: 50%;
+            width: 35px;
+            height: 35px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            font-size: 1.2em;
+            transition: all 0.3s ease;
+        }
+
+        #chatSendBtn:hover {
+            background-color: var(--neon-purple);
+            transform: scale(1.05);
+        }
+
+        .chat-close-btn {
+            background: none;
+            border: none;
+            color: var(--dark-bg);
+            font-size: 1.5em;
+            cursor: pointer;
+            opacity: 0.8;
+            transition: opacity 0.3s ease;
+        }
+        .chat-close-btn:hover {
+            opacity: 1;
+        }
+
+        /* --- Sticky CTA for Mobile --- */
+        #mobileCta {
+            display: none; /* Hidden by default, shown on mobile */
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(10, 10, 10, 0.9);
+            padding: 15px;
+            text-align: center;
+            z-index: 999;
+            box-shadow: 0 -2px 10px rgba(0, 229, 255, 0.3);
+            border-top: 1px solid rgba(0, 229, 255, 0.1);
+        }
+
+        #mobileCta .cta-button {
+            width: 90%;
+            max-width: 300px;
+            padding: 12px 20px;
+            font-size: 1.1em;
+        }
+
+        /* --- Responsiveness --- */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+                flex-direction: column;
+                width: 100%;
+                background-color: var(--header-bg-opacity);
+                position: absolute;
+                top: 80px; /* Adjust based on header height */
+                left: 0;
+                padding: 20px 0;
+                border-top: 1px solid rgba(0, 229, 255, 0.2);
+            }
+
+            .nav-links.active {
+                display: flex;
+            }
+
+            .nav-links li {
+                margin: 15px 0;
+                text-align: center;
+            }
+
+            .menu-toggle {
+                display: flex;
+                margin-left: auto; /* Push to right, next to controls */
+            }
+
+            .header-controls {
+                order: -1; /* Move controls to the left on mobile */
+                margin-right: 15px;
+            }
+
+            .hero h1 {
+                font-size: 2.5em;
+            }
+
+            .hero p {
+                font-size: 1.2em;
+            }
+
+            section h2 {
+                font-size: 2em;
+            }
+
+            .stats-grid {
+                flex-direction: column;
+                align-items: center;
+            }
+            .stat-item {
+                max-width: 90%;
+            }
+
+            .pricing-grid {
+                grid-template-columns: 1fr;
+            }
+
+            #chatPopup {
+                width: 90%;
+                right: 5%;
+                bottom: 80px; /* Adjust for sticky CTA */
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="progressBar"></div>
+
+    <div class="background-overlay"></div>
+    <video autoplay muted loop id="bg-video">
+        <source src="https://assets.mixkit.co/videos/preview/mixkit-futuristic-cityscape-with-neon-lights-29729-large.mp4" type="video/mp4">
+        </video>
+
+    <header>
+        <div class="container navbar">
+            <a href="#" class="logo">Yuya Lawrence</a>
+            <nav>
+                <ul class="nav-links">
+                    <li><a href="#beranda" data-lang-key="navBeranda">Beranda</a></li>
+                    <li><a href="#statistik" data-lang-key="navStatistik">Statistik</a></li>
+                    <li><a href="#portofolio" data-lang-key="navPortofolio">Portofolio</a></li>
+                    <li><a href="#showcase" data-lang-key="navShowcase">Showcase</a></li>
+                    <li><a href="#paket" data-lang-key="navPaket">Paket</a></li>
+                    <li><a href="#testimoni" data-lang-key="navTestimoni">Testimoni</a></li>
+                    <li><a href="#kontak" data-lang-key="navKontak">Kontak</a></li>
+                </ul>
+            </nav>
+            <div class="header-controls">
+                <div class="mode-toggle" id="modeToggle">
+                    <i class="fas fa-moon"></i>
+                </div>
+                <div class="lang-toggle" id="langToggle">
+                    ID
+                </div>
+                <div class="menu-toggle" id="menuToggle">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <section class="hero" id="beranda">
+            <div class="hero-content">
+                <h1 data-lang-key="heroTitle">Jasa Review Server SA-MP Profesional</h1>
+                <p data-lang-key="heroDesc">Tingkatkan visibilitas server SA-MP Anda dengan review berkualitas tinggi dari Yuya Lawrence.</p>
+                <a href="#kontak" class="cta-button" data-lang-key="heroCTA">Hubungi Sekarang</a>
+            </div>
+        </section>
+
+        <section id="statistik" class="container">
+            <h2 data-lang-key="statsTitle">Statistik Kami</h2>
+            <div class="stats-grid">
+<div class="stat-item">
+    <div class="icon"><i class="fas fa-users"></i></div>
+    <div class="number" id="subscriberCount">0</div>
+    <div class="label" data-lang-key="stat1Label">Pengikut Aktif</div>
+</div>
+<div class="stat-item">
+    <div class="icon"><i class="fas fa-video"></i></div>
+    <div class="number" id="videoCount">0</div>
+    <div class="label" data-lang-key="stat2Label">Video Review Dibuat</div>
+</div>
+                <div class="stat-item">
+                    <div class="icon"><i class="fas fa-star"></i></div>
+                    <div class="number" data-target="4.9">0</div>
+                    <div class="label" data-lang-key="stat3Label">Rating Rata-rata</div>
+                </div>
+            </div>
+            <!-- Komentar -->
+<div class="stat-item" id="commentsSection">
+  <div class="icon"><i class="fas fa-comments"></i></div>
+  <div class="label">Komentar Terbaru:</div>
+  <ul id="commentsList"><li>Memuat komentar...</li></ul>
+</div>
+        </section>
+
+        <section id="portofolio" class="container">
+            <h2 data-lang-key="portfolioTitle">Portofolio Pekerjaan</h2>
+            <div class="search-bar">
+                <input type="text" id="portfolioSearch" placeholder="Cari portofolio..." data-lang-key="portfolioSearchPlaceholder">
+            </div>
+
+
+    </div>
+</div>
+
+        </section>
+
+<section id="showcase" class="container">
+    <h2 data-lang-key="showcaseTitle">Server Yang Sudah Di Rivew</h2>
+    <div class="showcase-slider">
+        <div class="showcase-wrapper" id="showcaseSliderWrapper">
+
+            <!-- Showcase 1 -->
+            <div class="showcase-item">
+                <iframe width="100%" height="450px" src="https://www.youtube.com/embed/lMooBAyBPCI" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                <h3 data-lang-key="showcase1Title">Review Server SAMP Yuya Lawrence</h3>
+                <p data-lang-key="showcase1Desc">Video review server SA-MP resmi dari channel Yuya Lawrence.</p>
+            </div>
+
+            <!-- Showcase 2 -->
+            <div class="showcase-item">
+                <iframe width="100%" height="450px" src="https://www.youtube.com/embed/_qbLchfnxlY?si=mMjvsDqBJLqsZgBG" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                <h3 data-lang-key="showcase2Title">Sertifikat Kemitraan Platinum</h3>
+                <p data-lang-key="showcase2Desc">Video review server SA-MP resmi dari channel Yuya Lawrence.</p>
+            </div>
+
+            <!-- Showcase 3 -->
+            <div class="showcase-item">
+                <iframe width="100%" height="450px" src="https://www.youtube.com/embed/hSTph2-e_jc?si=1_y2mObwtAsygYR0" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                <h3 data-lang-key="showcase3Title">Penghargaan Komunitas</h3>
+                <p data-lang-key="showcase3Desc">Diakui sebagai kontributor aktif dalam komunitas SA-MP.</p>
+            </div>
+        <div class="showcase-slider">
+  <div id="showcaseSliderWrapper" class="showcase-wrapper"></div>
+  <div class="showcase-nav">
+    <button id="prevShowcase" class="showcase-btn">❮</button>
+    <button id="nextShowcase" class="showcase-btn">❯</button>
+  </div>
+</div>
+        </div>
+                <div class="slider-nav">
+                    <button class="slider-btn" id="prevShowcase"><i class="fas fa-chevron-left"></i></button>
+                    <button class="slider-btn" id="nextShowcase"><i class="fas fa-chevron-right"></i></button>
+                </div>
+            </div>
+        </section>
+
+        <section id="paket" class="container">
+            <h2 data-lang-key="pricingTitle">Pilih Paket Review Anda</h2>
+            <div class="pricing-grid">
+                <div class="price-card">
+                    <h3 data-lang-key="package1Title">Paket Basic</h3>
+                    <div class="price" data-lang-key="package1Price">Rp 150.000</div>
+                    <ul>
+                        <li data-lang-key="package1Feature1">1x Video Review Pendek (5-7 menit)</li>
+                        <li data-lang-key="package1Feature2">Promosi di Instagram Story</li>
+                        <li data-lang-key="package1Feature3">Tautan Langsung ke Server</li>
+                    </ul>
+                    <a href="#kontak" class="cta-button" data-lang-key="packageCTABasic">Pesan Sekarang</a>
+                </div>
+                <div class="price-card">
+                    <h3 data-lang-key="package2Title">Paket Standar</h3>
+                    <div class="price" data-lang-key="package2Price">Rp 300.000</div>
+                    <ul>
+                        <li data-lang-key="package2Feature1">1x Video Review Menengah (8-12 menit)</li>
+                        <li data-lang-key="package2Feature2">Promosi di Instagram Feed & Story</li>
+                        <li data-lang-key="package2Feature3">Tautan Langsung + Discord Server</li>
+                        <li data-lang-key="package2Feature4">Revisi Minor 1x</li>
+                    </ul>
+                    <a href="#kontak" class="cta-button" data-lang-key="packageCTAStandard">Pesan Sekarang</a>
+
+                </div>
+                <div class="price-card">
+                    <h3 data-lang-key="package3Title">Paket Premium</h3>
+                    <div class="price" data-lang-key="package3Price">Rp 500.000</div>
+                    <ul>
+                        <li data-lang-key="package3Feature1">1x Video Review Panjang (15+ menit)</li>
+                        <li data-lang-key="package3Feature2">Promosi Menyeluruh (IG, YouTube Community)</li>
+                        <li data-lang-key="package3Feature3">Tautan Lengkap + Discord + Website</li>
+                        <li data-lang-key="package3Feature4">Revisi Mayor 1x</li>
+                        <li data-lang-key="package3Feature5">Sesi Q&A di Live Stream</li>
+                    </ul>
+                    <a href="#kontak" class="cta-button" data-lang-key="packageCTAPremium">Pesan Sekarang</a>
+                </div>
+            </div>
+        </section>
+
+        <section id="testimoni" class="container">
+            <h2 data-lang-key="testimonialsTitle">Apa Kata Klien Kami</h2>
+            <div class="testimonial-carousel">
+                <div class="carousel-wrapper" id="testimonialCarouselWrapper">
+                    <div class="testimonial-item">
+                        <p data-lang-key="testimonial1Quote">"Review dari Yuya Lawrence sangat membantu meningkatkan jumlah pemain di server kami. Kualitas videonya luar biasa!"</p>
+                        <div class="client-name" data-lang-key="testimonial1Client">- [Nama Klien 1], Pemilik Server Gaming</div>
+                    </div>
+                    <div class="testimonial-item">
+                        <p data-lang-key="testimonial2Quote">"Profesionalisme dan detail dalam setiap review patut diacungi jempol. Server kami jadi lebih dikenal luas."</p>
+                        <div class="client-name" data-lang-key="testimonial2Client">- [Nama Klien 2], Admin Komunitas SA-MP</div>
+                    </div>
+                    <div class="testimonial-item">
+                        <p data-lang-key="testimonial3Quote">"Investasi terbaik untuk promosi server. Hasilnya langsung terlihat, terima kasih Yuya!"</p>
+                        <div class="client-name" data-lang-key="testimonial3Client">- [Nama Klien 3], Developer Game</div>
+                    </div>
+                </div>
+                <div class="carousel-nav">
+                    <button class="carousel-btn" id="prevTestimonial"><i class="fas fa-chevron-left"></i></button>
+                    <button class="carousel-btn" id="nextTestimonial"><i class="fas fa-chevron-right"></i></button>
+                </div>
+            </div>
+        </section>
+
+<section id="kontak" class="container">
+    <h2 data-lang-key="contactTitle">Hubungi Kami</h2>
+    <form id="contactForm" class="contact-form">
+        <div class="form-group">
+            <input type="text" id="name" name="name" required placeholder=" ">
+            <label for="name" data-lang-key="contactLabelName">Nama Server Anda</label>
+            <div class="error-message" id="nameError"></div>
+        </div>
+        <div class="form-group">
+            <input type="tel" id="whatsapp" name="whatsapp" required placeholder=" ">
+            <label for="whatsapp" data-lang-key="contactLabelWhatsapp">Nomor WA Anda & link Server Anda</label>
+            <div class="error-message" id="whatsappError"></div>
+        </div>
+        <div class="form-group">
+            <select id="package" name="package" required>
+                <option value="" disabled selected>Pilih Paket</option>
+                <option value="Basic">Basic</option>
+                <option value="Standar">Standar</option>
+                <option value="Premium">Premium</option>
+            </select>
+            <label for="package" data-lang-key="contactLabelPackage"></label>
+            <div class="error-message" id="packageError"></div>
+        </div>
+        <div class="form-group">
+            <textarea id="message" name="message" required placeholder=" "></textarea>
+            <label for="message" data-lang-key="contactLabelMessage">Pesan Anda</label>
+            <div class="error-message" id="messageError"></div>
+        </div>
+        <button type="submit" class="cta-button" data-lang-key="contactSubmit">Kirim Pesan</button>
+    </form>
+</section>
+    </main>
+
+    <footer>
+        <div class="container footer-content">
+            <p>&copy; 2025 Yuya Lawrence. All rights reserved.</p>
+            <div class="social-links">
+                <a href="https://www.youtube.com/channel/UCEJPX2YG1uR_Lo8mRGwa8GQ" target="_blank" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+                <a href="https://www.instagram.com/maula8461/" target="_blank" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                <a href="https://discord.gg/VPtE9uYs" target="_blank" aria-label="Discord"><i class="fab fa-discord"></i></a>
+            </div>
+        </div>
+    </footer>
+
+    <div id="chatPopup">
+        <div id="chatHeader">
+            <span data-lang-key="chatTitle">Chat dengan Yuya Lawrence</span>
+            <button class="chat-close-btn" id="chatCloseBtn">&times;</button>
+        </div>
+        <div id="chatBody">
+            <p data-lang-key="chatWelcome">Halo!</p>
+            <p data-lang-key="chatQuestion">Butuh bantuan soal review server kamu?</p>
+            </div>
+        <div id="chatInputContainer">
+            <input type="text" id="chatInput" placeholder="Ketik pesan..." data-lang-key="chatPlaceholder">
+            <button id="chatSendBtn"><i class="fas fa-paper-plane"></i></button>
+        </div>
+    </div>
+    
+    <div id="mobileCta">
+        <a href="#kontak" class="cta-button" data-lang-key="heroCTA">Hubungi Sekarang</a>
+    </div>
+
+    <script>
+   document.getElementById('contactForm').addEventListener('submit', function(event) {
+        event.preventDefault(); // Mencegah pengiriman formulir secara default
+
+        const name = document.getElementById('name').value;
+        const whatsapp = document.getElementById('whatsapp').value;
+        const packageType = document.getElementById('package').value;
+        const message = document.getElementById('message').value;
+
+        // Validasi sederhana
+        let isValid = true;
+        if (name.trim() === '') {
+            document.getElementById('nameError').textContent = 'Nama Server Anda wajib diisi.';
+            isValid = false;
+        } else {
+            document.getElementById('nameError').textContent = '';
+        }
+
+        if (whatsapp.trim() === '') {
+            document.getElementById('whatsappError').textContent = 'Nomor WA & Link Server Anda wajib diisi.';
+            isValid = false;
+        } else {
+            document.getElementById('whatsappError').textContent = '';
+        }
+
+        if (packageType === '') {
+            document.getElementById('packageError').textContent = 'Pilihan paket wajib diisi.';
+            isValid = false;
+        } else {
+            document.getElementById('packageError').textContent = '';
+        }
+
+        if (message.trim() === '') {
+            document.getElementById('messageError').textContent = 'Pesan Anda wajib diisi.';
+            isValid = false;
+        } else {
+            document.getElementById('messageError').textContent = '';
+        }
+
+        if (isValid) {
+            const phoneNumber = '62895386863049'; // Nomor WA tujuan (gunakan format internasional tanpa +)
+            const whatsappMessage = `👋Halo, saya ingin order.\n\n🎮Nama Server: ${name}\n🍳Nomor WA & Link Server: ${whatsapp}\n🎁Pilihan Paket: ${packageType}\n📩Pesan: ${message}`;
+            const whatsappURL = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(whatsappMessage)}`;
+
+            window.open(whatsappURL, '_blank'); // Membuka WhatsApp di tab baru
+            
+            // Opsional: Reset formulir setelah pengiriman
+            this.reset();
+            alert('Formulir berhasil dikirim ke WhatsApp!');
+        } else {
+            alert('Mohon lengkapi semua kolom yang wajib diisi.');
+        }
+    });
+  const API_KEY = 'AIzaSyDZL6UXgFTCcMCJP3Kas27YOc4fdeoam0I';
+  const CHANNEL_ID = 'UCEJPX2YG1uR_Lo8mRGwa8GQ';
+  const MAX_VIDEOS = 5; // Jumlah maksimum video yang ditampilkan
+
+  async function fetchChannelStats() {
+    const url = `https://www.googleapis.com/youtube/v3/channels?part=statistics&id=${CHANNEL_ID}&key=${API_KEY}`;
+    const res = await fetch(url);
+    const data = await res.json();
+    const stats = data.items[0].statistics;
+    document.getElementById('subscriberCount').innerText = parseInt(stats.subscriberCount).toLocaleString();
+    document.getElementById('videoCount').innerText = parseInt(stats.videoCount).toLocaleString();
+  }
+
+  async function fetchLatestVideos() {
+    const url = `https://www.googleapis.com/youtube/v3/search?key=${API_KEY}&channelId=${CHANNEL_ID}&part=snippet,id&order=date&maxResults=${MAX_VIDEOS}`;
+    const res = await fetch(url);
+    const data = await res.json();
+    return data.items;
+  }
+
+  function formatDate(dateStr) {
+    const date = new Date(dateStr);
+    return date.toLocaleString('id-ID');
+  }
+
+  async function fetchComments(videoId) {
+    const url = `https://www.googleapis.com/youtube/v3/commentThreads?part=snippet&videoId=${videoId}&maxResults=5&key=${API_KEY}`;
+    try {
+      const res = await fetch(url);
+      const data = await res.json();
+      const commentsList = document.getElementById('commentsList');
+      commentsList.innerHTML = '';
+      data.items.forEach(item => {
+        const comment = item.snippet.topLevelComment.snippet;
+        const li = document.createElement('li');
+        li.innerHTML = `
+          <img class="avatar" src="${comment.authorProfileImageUrl}" alt="Avatar">
+          <div class="comment-text">
+            <strong>${comment.authorDisplayName}</strong>
+            <div>${comment.textDisplay}</div>
+            <div class="comment-time">${formatDate(comment.publishedAt)}</div>
+          </div>
+        `;
+        commentsList.appendChild(li);
+      });
+    } catch (err) {
+      document.getElementById('commentsList').innerHTML = '<li>Gagal memuat komentar</li>';
+      console.error(err);
+    }
+  }
+
+  // Fungsi untuk menambahkan video ke slider
+  async function updateShowcaseSlider() {
+    const videos = await fetchLatestVideos();
+    const wrapper = document.getElementById('showcaseSliderWrapper');
+    wrapper.innerHTML = ''; // Kosongkan wrapper terlebih dahulu
+    
+    videos.forEach(video => {
+      const videoId = video.id.videoId;
+      const videoTitle = video.snippet.title;
+      const publishedAt = formatDate(video.snippet.publishedAt);
+      
+      const item = document.createElement('div');
+      item.className = 'showcase-item';
+      item.innerHTML = `
+        <iframe src="https://www.youtube.com/embed/${videoId}" frameborder="0" allowfullscreen></iframe>
+        <h3>${videoTitle}</h3>
+        <p>Dipublikasikan: ${publishedAt}</p>
+      `;
+      wrapper.appendChild(item);
+    });
+    
+    // Setelah menambahkan video, setup slider kembali
+    setupShowcaseSlider();
+  }
+
+  // SLIDER NAVIGATION
+  function setupShowcaseSlider() {
+    const wrapper = document.getElementById('showcaseSliderWrapper');
+    const prevBtn = document.getElementById('prevShowcase');
+    const nextBtn = document.getElementById('nextShowcase');
+    const items = wrapper.querySelectorAll('.showcase-item');
+    let currentIndex = 0;
+
+    // Sembunyikan tombol navigasi jika tidak ada video
+    if (items.length <= 1) {
+      prevBtn.style.display = 'none';
+      nextBtn.style.display = 'none';
+    } else {
+      prevBtn.style.display = 'block';
+      nextBtn.style.display = 'block';
+    }
+
+    function updateSlider() {
+      const offset = -currentIndex * wrapper.clientWidth;
+      wrapper.style.transform = `translateX(${offset}px)`;
+      wrapper.style.transition = 'transform 0.5s ease';
+    }
+
+    prevBtn.addEventListener('click', () => {
+      if (currentIndex > 0) {
+        currentIndex--;
+        updateSlider();
+      }
+    });
+
+    nextBtn.addEventListener('click', () => {
+      if (currentIndex < items.length - 1) {
+        currentIndex++;
+        updateSlider();
+      }
+    });
+    
+    // Inisialisasi posisi slider
+    updateSlider();
+  }
+
+  async function init() {
+    await fetchChannelStats();
+    await updateShowcaseSlider();
+    
+    // Ambil video terbaru untuk komentar
+    const videos = await fetchLatestVideos();
+    if (videos.length > 0) {
+      await fetchComments(videos[0].id.videoId);
+    }
+  }
+
+  // Jalankan init dan refresh setiap 5 menit untuk update video baru
+  init();
+  setInterval(init, 7200000); // 300000 ms = 5 menit
+  // setInterval(updateSubscriberCount, 5 * 60 * 1000);
+        // Language Data
+        const translations = {
+            'id': {
+                navBeranda: 'Beranda',
+                navStatistik: 'Statistik',
+                navPortofolio: 'Portofolio',
+                navShowcase: 'Showcase',
+                navPaket: 'Paket',
+                navTestimoni: 'Testimoni',
+                navKontak: 'Kontak',
+                heroTitle: 'Jasa Review Server SA-MP Profesional',
+                heroDesc: 'Tingkatkan visibilitas server SA-MP Anda dengan review berkualitas tinggi dari Yuya Lawrence.',
+                heroCTA: 'Hubungi Sekarang',
+                statsTitle: 'Statistik Kami',
+                stat1Label: 'Pengikut Aktif',
+                stat2Label: 'Video Review Dibuat',
+                stat3Label: 'Rating Rata-rata',
+                portfolioTitle: 'Portofolio Pekerjaan',
+                portfolioSearchPlaceholder: 'Cari portofolio...',
+                portfolio1Title: 'Review Server A (Roleplay)',
+                portfolio1Desc: 'Ulasan mendalam tentang pengalaman roleplay di Server A.',
+                portfolio2Title: 'Review Server B (Stunt/DM)',
+                portfolio2Desc: 'Menampilkan aksi dan fitur unik dari Server B.',
+                portfolio3Title: 'Review Server C (Fun)',
+                portfolio3Desc: 'Review server yang fokus pada kesenangan dan komunitas.',
+                showcaseTitle: 'Server Yang Sudah Di Rivew',
+                showcase1Title: 'Review Server SAMP Yuya Lawrence',
+                showcase1Desc: 'Video review server SA-MP resmi dari channel Yuya Lawrence.',
+                showcase2Title: 'Sertifikat Kemitraan Platinum',
+                showcase2Desc: 'Video review server SA-MP resmi dari channel Yuya Lawrence.',
+                showcase3Title: 'Penghargaan Komunitas',
+                showcase3Desc: 'Diakui sebagai kontributor aktif dalam komunitas SA-MP.',
+                pricingTitle: 'Pilih Paket Review Anda',
+                package1Title: 'Paket Basic',
+                package1Price: 'Rp 15.000',
+                package1Feature1: '1x Video Review Pendek (7 tempat)',
+                package1Feature2: 'Promosi di Instagram Story',
+                package1Feature3: 'Tautan Langsung ke Server',
+                packageCTABasic: 'Pesan Sekarang',
+                package2Title: 'Paket Standar',
+                package2Price: 'Rp 25.000',
+                package2Feature1: '1x Video Review Menengah (10 tempat)',
+                package2Feature2: 'Promosi di Instagram Feed & Story',
+                package2Feature3: 'Tautan Langsung + Discord Server',
+                package2Feature4: 'Revisi Minor 1x',
+                packageCTAStandard: 'Pesan Sekarang',
+                package3Title: 'Paket Premium',
+                package3Price: 'Rp 50.000',
+                package3Feature1: '1x Video Review Panjang (Full RIvew)',
+                package3Feature2: 'Promosi Menyeluruh (IG, YouTube Community)',
+                package3Feature3: 'Tautan Lengkap + Discord + Website',
+                package3Feature4: 'Revisi Mayor 1x',
+                package3Feature5: 'prommosi Facebook & Pengerjaan Satset',
+                packageCTAPremium: 'Pesan Sekarang',
+                testimonialsTitle: 'Apa Kata Klien Kami',
+                testimonial1Quote: '"Review dari Yuya Lawrence sangat membantu meningkatkan jumlah pemain di server kami. Kualitas videonya luar biasa!"',
+                testimonial1Client: '- [Nama Klien 1], Pemilik Server Gaming',
+                testimonial2Quote: '"Profesionalisme dan detail dalam setiap review patut diacungi jempol. Server kami jadi lebih dikenal luas."',
+                testimonial2Client: '- [Nama Klien 2], Admin Komunitas SA-MP',
+                testimonial3Quote: '"Investasi terbaik untuk promosi server. Hasilnya langsung terlihat, terima kasih Yuya!"',
+                testimonial3Client: '- [Nama Klien 3], Developer Game',
+                contactTitle: 'Hubungi Kami',
+                contactLabelName: 'Nama Server Anda',
+                contactLabelEmail: 'Nomor WA Anda & link Server Anda',
+                contactLabelMessage: 'Pesan Anda',
+                contactSubmit: 'Kirim Pesan',
+                chatTitle: 'Chat dengan Yuya Lawrence',
+                chatWelcome: 'Halo!',
+                chatQuestion: 'Butuh bantuan soal review server kamu?',
+                chatPlaceholder: 'Ketik pesan...',
+            },
+            // Add 'en' (English) or other languages here if needed
+            'en': {
+                navBeranda: 'Home',
+                navStatistik: 'Statistics',
+                navPortofolio: 'Portfolio',
+                navShowcase: 'Showcase',
+                navPaket: 'Packages',
+                navTestimoni: 'Testimonials',
+                navKontak: 'Contact',
+                heroTitle: 'Professional SA-MP Server Review Service',
+                heroDesc: 'Boost your SA-MP server\'s visibility with high-quality reviews from Yuya Lawrence.',
+                heroCTA: 'Contact Now',
+                statsTitle: 'Our Statistics',
+                stat1Label: 'Active Followers',
+                stat2Label: 'Review Videos Created',
+                stat3Label: 'Average Rating',
+                portfolioTitle: 'Our Portfolio',
+                portfolioSearchPlaceholder: 'Search portfolio...',
+                portfolio1Title: 'Server A Review (Roleplay)',
+                portfolio1Desc: 'In-depth review of the roleplay experience on Server A.',
+                portfolio2Title: 'Server B Review (Stunt/DM)',
+                portfolio2Desc: 'Showcasing the unique actions and features of Server B.',
+                portfolio3Title: 'Server C Review (Fun)',
+                portfolio3Desc: 'Review of a server focused on fun and community.',
+                showcaseTitle: 'Showcase & Achievements',
+                showcase1Title: 'Yuya Lawrence SAMP Server Review',
+                showcase1Desc: 'Official SA-MP server review video from Yuya Lawrence channel.',
+                showcase2Title: 'Platinum Partnership Certificate',
+                showcase2Desc: 'Award for long-term partnership and contribution.',
+                showcase3Title: 'Community Award',
+                showcase3Desc: 'Recognized as an active contributor to the SA-MP community.',
+                pricingTitle: 'Choose Your Review Package',
+                package1Title: 'Basic Package',
+                package1Price: 'Rp 150.000',
+                package1Feature1: '1x Short Video Review (5-7 min)',
+                package1Feature2: 'Instagram Story Promotion',
+                package1Feature3: 'Direct Server Link',
+                packageCTABasic: 'Order Now',
+                package2Title: 'Standard Package',
+                package2Price: 'Rp 300.000',
+                package2Feature1: '1x Medium Video Review (8-12 min)',
+                package2Feature2: 'Instagram Feed & Story Promotion',
+                package2Feature3: 'Direct Link + Discord Server',
+                package2Feature4: '1x Minor Revision',
+                packageCTAStandard: 'Order Now',
+                package3Title: 'Premium Package',
+                package3Price: 'Rp 500.000',
+                package3Feature1: '1x Long Video Review (15+ min)',
+                package3Feature2: 'Full Promotion (IG, YouTube Community)',
+                package3Feature3: 'Full Links + Discord + Website',
+                package3Feature4: '1x Major Revision',
+                package3Feature5: 'Q&A Session on Live Stream',
+                packageCTAPremium: 'Order Now',
+                testimonialsTitle: 'What Our Clients Say',
+                testimonial1Quote: '"Yuya Lawrence\'s review greatly helped increase our server\'s player count. The video quality is outstanding!"',
+                testimonial1Client: '- [Client Name 1], Gaming Server Owner',
+                testimonial2Quote: '"The professionalism and detail in every review are commendable. Our server became widely known."',
+                testimonial2Client: '- [Client Name 2], SA-MP Community Admin',
+                testimonial3Quote: '"Best investment for server promotion. Results were immediate, thank you Yuya!"',
+                testimonial3Client: '- [Client Name 3], Game Developer',
+                contactTitle: 'Contact Us',
+                contactLabelName: 'Your Name',
+                contactLabelEmail: 'Your Email',
+                contactLabelMessage: 'Your Message',
+                contactSubmit: 'Send Message',
+                chatTitle: 'Chat with Yuya Lawrence',
+                chatWelcome: 'Hello!',
+                chatQuestion: 'Need help regarding your server review?',
+                chatPlaceholder: 'Type a message...',
+            }
+        };
+
+        let currentLang = 'id';
+
+        function applyTranslations() {
+            document.querySelectorAll('[data-lang-key]').forEach(element => {
+                const key = element.getAttribute('data-lang-key');
+                if (translations[currentLang] && translations[currentLang][key]) {
+                    if (element.tagName === 'INPUT' && element.hasAttribute('placeholder')) {
+                        element.setAttribute('placeholder', translations[currentLang][key]);
+                        // Add or remove 'has-content' class based on content
+                        if (element.value) {
+                            element.classList.add('has-content');
+                        } else {
+                            element.classList.remove('has-content');
+                        }
+                    } else if (element.tagName === 'TEXTAREA' && element.hasAttribute('placeholder')) {
+                        element.setAttribute('placeholder', translations[currentLang][key]);
+                        if (element.value) {
+                            element.classList.add('has-content');
+                        } else {
+                            element.classList.remove('has-content');
+                        }
+                    } else {
+                        element.textContent = translations[currentLang][key];
+                    }
+                }
+            });
+
+            // Adjust label positioning for form inputs on language change
+            document.querySelectorAll('.form-group input, .form-group textarea').forEach(input => {
+                if (input.value) {
+                    input.classList.add('has-content');
+                } else {
+                    input.classList.remove('has-content');
+                }
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            applyTranslations(); // Apply translations on initial load
+
+            const langToggle = document.getElementById('langToggle');
+            langToggle.addEventListener('click', () => {
+                currentLang = currentLang === 'id' ? 'en' : 'id';
+                langToggle.textContent = currentLang.toUpperCase();
+                applyTranslations();
+            });
+
+            // Toggle Dark/Light Mode
+            const modeToggle = document.getElementById('modeToggle');
+            modeToggle.addEventListener('click', () => {
+                document.body.classList.toggle('light-mode');
+                const isLightMode = document.body.classList.contains('light-mode');
+                modeToggle.innerHTML = isLightMode ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
+                localStorage.setItem('theme', isLightMode ? 'light' : 'dark');
+            });
+
+            // Apply saved theme on load
+            if (localStorage.getItem('theme') === 'light') {
+                document.body.classList.add('light-mode');
+                modeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+            } else {
+                modeToggle.innerHTML = '<i class="fas fa-moon"></i>';
+            }
+
+            // Mobile Menu Toggle
+            const menuToggle = document.getElementById('menuToggle');
+            const navLinks = document.querySelector('.nav-links');
+
+            menuToggle.addEventListener('click', () => {
+                navLinks.classList.toggle('active');
+                menuToggle.classList.toggle('active');
+            });
+
+            // Smooth Scroll for Nav Links
+            document.querySelectorAll('nav .nav-links a').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    navLinks.classList.remove('active'); // Close menu on link click
+                    menuToggle.classList.remove('active'); // Deactivate toggle icon
+                    document.querySelector(this.getAttribute('href')).scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                });
+            });
+
+            // Scroll Progress Bar
+            const progressBar = document.getElementById('progressBar');
+            window.addEventListener('scroll', () => {
+                const scrollableHeight = document.documentElement.scrollHeight - window.innerHeight;
+                const scrolled = window.scrollY;
+                const progress = (scrolled / scrollableHeight) * 100;
+                progressBar.style.width = progress + '%';
+            });
+
+            // Scroll Reveal Animation
+            const sections = document.querySelectorAll('section');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            }, {
+                threshold: 0.1 // Trigger when 10% of the section is visible
+            });
+
+            sections.forEach(section => {
+                observer.observe(section);
+            });
+
+            // Statistics Counter Animation
+            const statsSection = document.getElementById('statistik');
+            const statNumbers = document.querySelectorAll('.stat-item .number');
+            let countersAnimated = false;
+
+            const statsObserver = new IntersectionObserver((entries) => {
+                if (entries[0].isIntersecting && !countersAnimated) {
+                    statNumbers.forEach(num => {
+                        const target = +num.getAttribute('data-target');
+                        const isFloat = target % 1 !== 0; // Check if it's a float
+                        let current = 0;
+                        const duration = 2000; // milliseconds
+                        const increment = target / (duration / 16); // ~60fps
+
+                        const updateCounter = () => {
+                            current += increment;
+                            if (current < target) {
+                                num.textContent = isFloat ? current.toFixed(1) : Math.ceil(current);
+                                requestAnimationFrame(updateCounter);
+                            } else {
+                                num.textContent = isFloat ? target.toFixed(1) : target;
+                            }
+                        };
+                        updateCounter();
+                    });
+                    countersAnimated = true;
+                }
+            }, {
+                threshold: 0.5 // Trigger when 50% of the section is visible
+            });
+
+            if (statsSection) {
+                statsObserver.observe(statsSection);
+            }
+
+            // Portfolio Slider
+            const portfolioSliderWrapper = document.getElementById('portfolioSliderWrapper');
+            const prevPortfolio = document.getElementById('prevPortfolio');
+            const nextPortfolio = document.getElementById('nextPortfolio');
+            let portfolioIndex = 0;
+
+            function updatePortfolioSlider() {
+                const itemWidth = portfolioSliderWrapper.children[0].clientWidth;
+                portfolioSliderWrapper.style.transform = `translateX(${-portfolioIndex * itemWidth}px)`;
+            }
+
+            if (prevPortfolio && nextPortfolio) {
+                prevPortfolio.addEventListener('click', () => {
+                    portfolioIndex = (portfolioIndex > 0) ? portfolioIndex - 1 : portfolioSliderWrapper.children.length - 1;
+                    updatePortfolioSlider();
+                });
+
+                nextPortfolio.addEventListener('click', () => {
+                    portfolioIndex = (portfolioIndex < portfolioSliderWrapper.children.length - 1) ? portfolioIndex + 1 : 0;
+                    updatePortfolioSlider();
+                });
+
+                // Recalculate on resize
+                window.addEventListener('resize', updatePortfolioSlider);
+            }
+
+            // Portfolio Search Functionality
+            const portfolioSearchInput = document.getElementById('portfolioSearch');
+            if (portfolioSearchInput) {
+                portfolioSearchInput.addEventListener('keyup', function() {
+                    const searchTerm = this.value.toLowerCase();
+                    const portfolioItems = document.querySelectorAll('.portfolio-slider .slider-item');
+                    let foundAny = false;
+
+                    portfolioItems.forEach(item => {
+                        const title = item.querySelector('h3').textContent.toLowerCase();
+                        const desc = item.querySelector('p').textContent.toLowerCase();
+                        const tags = item.getAttribute('data-tags') ? item.getAttribute('data-tags').toLowerCase() : '';
+
+                        if (title.includes(searchTerm) || desc.includes(searchTerm) || tags.includes(searchTerm)) {
+                            item.style.display = 'block'; // Show item
+                            foundAny = true;
+                        } else {
+                            item.style.display = 'none'; // Hide item
+                        }
+                    });
+
+                    // Adjust slider if needed (optional: reset to first visible item)
+                    if (foundAny) {
+                        portfolioIndex = 0; // Reset slider to start
+                        updatePortfolioSlider();
+                    }
+                });
+            }
+
+
+            // Testimonial Carousel
+            const testimonialCarouselWrapper = document.getElementById('testimonialCarouselWrapper');
+            const prevTestimonial = document.getElementById('prevTestimonial');
+            const nextTestimonial = document.getElementById('nextTestimonial');
+            let testimonialIndex = 0;
+
+            function updateTestimonialCarousel() {
+                if (!testimonialCarouselWrapper.children[0]) return; // Guard against empty carousel
+                const itemWidth = testimonialCarouselWrapper.children[0].clientWidth;
+                testimonialCarouselWrapper.style.transform = `translateX(${-testimonialIndex * itemWidth}px)`;
+            }
+
+            if (prevTestimonial && nextTestimonial) {
+                prevTestimonial.addEventListener('click', () => {
+                    testimonialIndex = (testimonialIndex > 0) ? testimonialIndex - 1 : testimonialCarouselWrapper.children.length - 1;
+                    updateTestimonialCarousel();
+                });
+
+                nextTestimonial.addEventListener('click', () => {
+                    testimonialIndex = (testimonialIndex < testimonialCarouselWrapper.children.length - 1) ? testimonialIndex + 1 : 0;
+                    updateTestimonialCarousel();
+                });
+
+                // Recalculate on resize
+                window.addEventListener('resize', updateTestimonialCarousel);
+                // Initial update
+                updateTestimonialCarousel();
+            }
+
+            // Showcase Slider
+            const showcaseSliderWrapper = document.getElementById('showcaseSliderWrapper');
+            const prevShowcase = document.getElementById('prevShowcase');
+            const nextShowcase = document.getElementById('nextShowcase');
+            let showcaseIndex = 0;
+
+            function updateShowcaseSlider() {
+                if (!showcaseSliderWrapper.children[0]) return;
+                const itemWidth = showcaseSliderWrapper.children[0].clientWidth;
+                showcaseSliderWrapper.style.transform = `translateX(${-showcaseIndex * itemWidth}px)`;
+            }
+
+            if (prevShowcase && nextShowcase) {
+                prevShowcase.addEventListener('click', () => {
+                    showcaseIndex = (showcaseIndex > 0) ? showcaseIndex - 1 : showcaseSliderWrapper.children.length - 1;
+                    updateShowcaseSlider();
+                });
+
+                nextShowcase.addEventListener('click', () => {
+                    showcaseIndex = (showcaseIndex < showcaseSliderWrapper.children.length - 1) ? showcaseIndex + 1 : 0;
+                    updateShowcaseSlider();
+                });
+
+                // Recalculate on resize
+                window.addEventListener('resize', updateShowcaseSlider);
+                // Initial update
+                updateShowcaseSlider();
+            }
+
+
+            // Form Input Label Animation (Focus/Content)
+            const formInputs = document.querySelectorAll('.form-group input, .form-group textarea');
+            formInputs.forEach(input => {
+                // Check on load if input has content (e.g., if value is pre-filled by browser)
+                if (input.value) {
+                    input.classList.add('has-content');
+                }
+
+                input.addEventListener('focus', () => {
+                    input.classList.add('has-content');
+                });
+                input.addEventListener('blur', () => {
+                    if (!input.value) {
+                        input.classList.remove('has-content');
+                    }
+                });
+                // Ensure placeholder disappears when focused or has content
+                input.addEventListener('input', () => {
+                    if (input.value) {
+                        input.classList.add('has-content');
+                    } else {
+                        input.classList.remove('has-content');
+                    }
+                });
+            });
+
+            // Contact Form Validation (Basic)
+            const contactForm = document.getElementById('contactForm');
+            if (contactForm) {
+                contactForm.addEventListener('submit', function (e) {
+                    e.preventDefault();
+                    let isValid = true;
+
+                    // Name validation
+                    const nameInput = document.getElementById('name');
+                    const nameError = document.getElementById('nameError');
+                    if (nameInput.value.trim() === '') {
+                        nameError.textContent = 'Nama tidak boleh kosong.';
+                        isValid = false;
+                    } else {
+                        nameError.textContent = '';
+                    }
+
+                    // Email validation
+                    const emailInput = document.getElementById('email');
+                    const emailError = document.getElementById('emailError');
+                    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                    if (!emailPattern.test(emailInput.value.trim())) {
+                        emailError.textContent = 'Masukkan alamat email yang valid.';
+                        isValid = false;
+                    } else {
+                        emailError.textContent = '';
+                    }
+
+                    // Message validation
+                    const messageInput = document.getElementById('message');
+                    const messageError = document.getElementById('messageError');
+                    if (messageInput.value.trim() === '') {
+                        messageError.textContent = 'Pesan tidak boleh kosong.';
+                        isValid = false;
+                    } else {
+                        messageError.textContent = '';
+                    }
+
+                    if (isValid) {
+                        alert('Pesan Anda berhasil dikirim! (Simulasi)'); // Replace with actual form submission
+                        this.reset(); // Clear form
+                        // Remove has-content class for labels to reset
+                        formInputs.forEach(input => input.classList.remove('has-content'));
+                    }
+                });
+            }
+
+
+            // Chat Popup Functionality
+            const chatPopup = document.getElementById('chatPopup');
+            const chatCloseBtn = document.getElementById('chatCloseBtn');
+            const chatInput = document.getElementById('chatInput');
+            const chatSendBtn = document.getElementById('chatSendBtn');
+            const chatBody = document.getElementById('chatBody');
+
+            // Show chat popup after a delay
+            setTimeout(() => {
+                if (chatPopup) {
+                    chatPopup.style.display = 'flex';
+                }
+            }, 3000); // Show after 3 seconds
+
+            if (chatCloseBtn) {
+                chatCloseBtn.addEventListener('click', () => {
+                    chatPopup.style.display = 'none';
+                });
+            }
+
+            if (chatSendBtn) {
+                chatSendBtn.addEventListener('click', () => {
+                    sendMessage();
+                });
+            }
+
+            if (chatInput) {
+                chatInput.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') {
+                        sendMessage();
+                    }
+                });
+            }
+
+            function sendMessage() {
+                const message = chatInput.value.trim();
+                if (message !== '') {
+                    const messageElement = document.createElement('p');
+                    messageElement.textContent = `Anda: ${message}`;
+                    chatBody.appendChild(messageElement);
+                    chatInput.value = '';
+                    chatBody.scrollTop = chatBody.scrollHeight; // Auto-scroll to latest message
+
+                    // Simulate a reply after a short delay
+                    setTimeout(() => {
+                        const replyElement = document.createElement('p');
+                        replyElement.textContent = 'Yuya: Mohon tunggu sebentar, saya akan segera membalas pesan Anda.';
+                        chatBody.appendChild(replyElement);
+                        chatBody.scrollTop = chatBody.scrollHeight;
+                    }, 1000);
+                }
+            }
+
+            // Sticky CTA for Mobile (Show/Hide)
+            const mobileCta = document.getElementById('mobileCta');
+            window.addEventListener('scroll', () => {
+                if (window.innerWidth <= 768) { // Only for mobile viewports
+                    const heroSection = document.getElementById('beranda');
+                    if (heroSection) {
+                        const heroRect = heroSection.getBoundingClientRect();
+                        if (heroRect.bottom <= 0) { // If hero section is scrolled past
+                            mobileCta.style.display = 'flex';
+                        } else {
+                            mobileCta.style.display = 'none';
+                        }
+                    }
+                } else {
+                    mobileCta.style.display = 'none'; // Hide on desktop
+                }
+            });
+
+            // Initial check for mobile CTA on load
+            if (window.innerWidth <= 768) {
+                const heroSection = document.getElementById('beranda');
+                if (heroSection && heroSection.getBoundingClientRect().bottom <= 0) {
+                    mobileCta.style.display = 'flex';
+                }
+            }
+
+        });
+    </script>
+</body>
+</html>
