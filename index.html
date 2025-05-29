@@ -262,17 +262,22 @@
             align-items: center;
         }
 
-    .logo {
-    width: 40px; /* Ukuran diameter lingkaran */
-    height: 40px;
-    border-radius: 50%; /* Membuat gambar bulat */
-    object-fit: cover; /* Memastikan gambar terisi dengan baik */
-    display: block;
-    transition: transform 0.3s ease;
-}
-
-.logo:hover {
-    transform: scale(1.1); /* Efek hover opsional */
+.logo {
+    font-size: 1.2em; /* Ukuran font lebih kecil */
+    font-weight: 700;
+    color: var(--neon-blue);
+    text-shadow: 0 0 8px var(--neon-blue), 0 0 15px var(--neon-purple);
+    text-decoration: none;
+    transition: color 0.5s ease, text-shadow 0.5s ease;
+    
+    /* Membuat logo berbentuk bulat */
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px; /* Lebar lingkaran */
+    height: 40px; /* Tinggi lingkaran */
+    border-radius: 50%; /* Membuat bentuk bulat */
+    background-color: rgba(0, 0, 0, 0.2); /* Warna background opsional */
 }
 
 
