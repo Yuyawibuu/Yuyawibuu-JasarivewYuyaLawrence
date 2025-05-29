@@ -1581,7 +1581,7 @@
 
         if (isValid) {
             const phoneNumber = '62895386863049'; // Nomor WA tujuan (gunakan format internasional tanpa +)
-            const whatsappMessage = `👋Halo, saya ingin order.\n\n🎮Nama Server: ${name}\n🍳Nomor WA & Link Server: ${whatsapp}\n🎁Pilihan Paket: ${packageType}\n📩Pesan: ${message}`;
+            const whatsappMessage = `👋Halo, saya ingin order.\n\n📡Nama Server: ${name}\n📎Nomor WA & Link Server: ${whatsapp}\n📦Pilihan Paket: ${packageType}\n📩Pesan: ${message}`;
             const whatsappURL = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(whatsappMessage)}`;
 
             window.open(whatsappURL, '_blank'); // Membuka WhatsApp di tab baru
