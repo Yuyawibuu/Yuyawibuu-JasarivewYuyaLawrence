@@ -1782,10 +1782,17 @@ async function init() {
   if (videos.length > 0) {
     await fetchComments(videos[0].id.videoId);
   }
+
+  // Reload halaman 1 kali setelah fetch data selesai supaya jumlahnya gak balik ke 0
+  if (!sessionStorage.getItem('reloaded')) {
+    sessionStorage.setItem('reloaded', 'true');
+    location.reload();
+  }
 }
 
 init();
 setInterval(init, 7200000); // Refresh setiap 2 jam
+
 
 
 
