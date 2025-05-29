@@ -1627,31 +1627,26 @@ async function fetchChannelStats() {
   if (cached) {
     stats = cached;
   } else {
-    const url = `https://www.googleapis.com/youtube/v3/channels?part=statistics&id=${CHANNEL_ID}&key=${API_KEY}`;
     try {
+      const url = `https://www.googleapis.com/youtube/v3/channels?part=statistics&id=${CHANNEL_ID}&key=${API_KEY}`;
       const res = await fetch(url);
       const data = await res.json();
 
-      if (data.items && data.items.length > 0 && data.items[0].statistics) {
+      if (data.items && data.items.length > 0) {
         stats = data.items[0].statistics;
         saveToCache(cacheKey, stats, CACHE_TTL);
       } else {
-        console.warn('Data statistik channel kosong atau tidak valid.');
-        return; // hentikan jika data kosong agar tidak reset
+        throw new Error('Data statistics tidak ditemukan');
       }
-    } catch (err) {
-      console.error('Gagal fetch statistik channel:', err);
-      return; // hentikan jika error fetch agar tidak reset
+    } catch (error) {
+      console.error('Error fetchChannelStats:', error);
+      // Ambil data lama dari cache, atau default 0
+      stats = cached || { subscriberCount: 0, videoCount: 0 };
     }
   }
 
-  if (stats) {
-    const subs = stats.subscriberCount ? parseInt(stats.subscriberCount).toLocaleString() : '0';
-    const videos = stats.videoCount ? parseInt(stats.videoCount).toLocaleString() : '0';
-
-    document.getElementById('subscriberCount').innerText = subs;
-    document.getElementById('videoCount').innerText = videos;
-  }
+  document.getElementById('subscriberCount').innerText = parseInt(stats.subscriberCount).toLocaleString();
+  document.getElementById('videoCount').innerText = parseInt(stats.videoCount).toLocaleString();
 }
 
 async function fetchLatestVideos() {
