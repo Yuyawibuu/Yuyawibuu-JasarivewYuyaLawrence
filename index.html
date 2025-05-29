@@ -1628,14 +1628,30 @@ async function fetchChannelStats() {
     stats = cached;
   } else {
     const url = `https://www.googleapis.com/youtube/v3/channels?part=statistics&id=${CHANNEL_ID}&key=${API_KEY}`;
-    const res = await fetch(url);
-    const data = await res.json();
-    stats = data.items[0].statistics;
-    saveToCache(cacheKey, stats, CACHE_TTL);
+    try {
+      const res = await fetch(url);
+      const data = await res.json();
+
+      if (data.items && data.items.length > 0 && data.items[0].statistics) {
+        stats = data.items[0].statistics;
+        saveToCache(cacheKey, stats, CACHE_TTL);
+      } else {
+        console.warn('Data statistik channel kosong atau tidak valid.');
+        return; // hentikan jika data kosong agar tidak reset
+      }
+    } catch (err) {
+      console.error('Gagal fetch statistik channel:', err);
+      return; // hentikan jika error fetch agar tidak reset
+    }
   }
 
-  document.getElementById('subscriberCount').innerText = parseInt(stats.subscriberCount).toLocaleString();
-  document.getElementById('videoCount').innerText = parseInt(stats.videoCount).toLocaleString();
+  if (stats) {
+    const subs = stats.subscriberCount ? parseInt(stats.subscriberCount).toLocaleString() : '0';
+    const videos = stats.videoCount ? parseInt(stats.videoCount).toLocaleString() : '0';
+
+    document.getElementById('subscriberCount').innerText = subs;
+    document.getElementById('videoCount').innerText = videos;
+  }
 }
 
 async function fetchLatestVideos() {
@@ -1758,6 +1774,7 @@ async function init() {
 
 init();
 setInterval(init, 7200000); // Refresh setiap 2 jam
+
 
   // setInterval(updateSubscriberCount, 5 * 60 * 1000);
         // Language Data
