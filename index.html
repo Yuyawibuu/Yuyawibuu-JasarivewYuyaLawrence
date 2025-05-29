@@ -1619,6 +1619,11 @@ function getFromCache(key) {
   }
 }
 
+function showLoading() {
+  document.getElementById('subscriberCount').innerText = 'Loading...';
+  document.getElementById('videoCount').innerText = 'Loading...';
+}
+
 async function fetchChannelStats() {
   const cacheKey = 'channelStats';
   const cached = getFromCache(cacheKey);
@@ -1758,6 +1763,18 @@ function setupShowcaseSlider() {
 }
 
 async function init() {
+  // Tampilkan data cache dulu kalau ada
+  const cachedStats = getFromCache('channelStats');
+  if (cachedStats) {
+    document.getElementById('subscriberCount').innerText = parseInt(cachedStats.subscriberCount).toLocaleString();
+    document.getElementById('videoCount').innerText = parseInt(cachedStats.videoCount).toLocaleString();
+  } else {
+    showLoading();
+  }
+
+  // Tunggu 5 detik agar loading terasa, baru fetch data baru
+  await new Promise(resolve => setTimeout(resolve, 5000));
+
   await fetchChannelStats();
   await updateShowcaseSlider();
 
@@ -1769,6 +1786,7 @@ async function init() {
 
 init();
 setInterval(init, 7200000); // Refresh setiap 2 jam
+
 
 
   // setInterval(updateSubscriberCount, 5 * 60 * 1000);
