@@ -262,8 +262,8 @@
             align-items: center;
         }
 
-        .logo {
-    font-size: 1.8em;
+ .logo {
+    font-size: 1.4em; /* agak kecilin teksnya juga biar proporsional */
     font-weight: 700;
     color: var(--neon-blue);
     text-shadow: 0 0 8px var(--neon-blue), 0 0 15px var(--neon-purple);
@@ -274,9 +274,13 @@
 }
 
 .logo-img {
-    height: 1.8em; /* supaya seukuran dengan teks */
-    margin-right: 0.5em; /* kasih jarak antara gambar dan teks */
+    height: 1.4em; /* lebih kecil dari sebelumnya */
+    width: 1.4em;
+    border-radius: 50%; /* bikin bulet */
+    margin-right: 0.5em;
+    object-fit: cover; /* biar isi gambar nggak gepeng */
 }
+
 
         .nav-links {
             list-style: none;
