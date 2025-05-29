@@ -1593,130 +1593,172 @@
             alert('Mohon lengkapi semua kolom yang wajib diisi.');
         }
     });
-  const API_KEY = 'AIzaSyBgAIn-hKccEoLBdf2bLSfd8QBAUooCdcw';
-  const CHANNEL_ID = 'UCEJPX2YG1uR_Lo8mRGwa8GQ';
-  const MAX_VIDEOS = 5;
+const API_KEY = 'AIzaSyBgAIn-hKccEoLBdf2bLSfd8QBAUooCdcw';
+const CHANNEL_ID = 'UCEJPX2YG1uR_Lo8mRGwa8GQ';
+const MAX_VIDEOS = 5;
+const CACHE_TTL = 5 * 60 * 1000; // 5 menit
 
-  async function fetchChannelStats() {
+function saveToCache(key, data, ttlMs) {
+  const expires = Date.now() + ttlMs;
+  localStorage.setItem(key, JSON.stringify({ data, expires }));
+}
+
+function getFromCache(key) {
+  const cached = localStorage.getItem(key);
+  if (!cached) return null;
+  try {
+    const { data, expires } = JSON.parse(cached);
+    if (Date.now() > expires) {
+      localStorage.removeItem(key);
+      return null;
+    }
+    return data;
+  } catch {
+    localStorage.removeItem(key);
+    return null;
+  }
+}
+
+async function fetchChannelStats() {
+  const cacheKey = 'channelStats';
+  const cached = getFromCache(cacheKey);
+  let stats;
+
+  if (cached) {
+    stats = cached;
+  } else {
     const url = `https://www.googleapis.com/youtube/v3/channels?part=statistics&id=${CHANNEL_ID}&key=${API_KEY}`;
     const res = await fetch(url);
     const data = await res.json();
-    const stats = data.items[0].statistics;
-    document.getElementById('subscriberCount').innerText = parseInt(stats.subscriberCount).toLocaleString();
-    document.getElementById('videoCount').innerText = parseInt(stats.videoCount).toLocaleString();
+    stats = data.items[0].statistics;
+    saveToCache(cacheKey, stats, CACHE_TTL);
   }
 
-  async function fetchLatestVideos() {
-    const url = `https://www.googleapis.com/youtube/v3/search?key=${API_KEY}&channelId=${CHANNEL_ID}&part=snippet,id&order=date&maxResults=${MAX_VIDEOS}`;
+  document.getElementById('subscriberCount').innerText = parseInt(stats.subscriberCount).toLocaleString();
+  document.getElementById('videoCount').innerText = parseInt(stats.videoCount).toLocaleString();
+}
+
+async function fetchLatestVideos() {
+  const cacheKey = 'latestVideos';
+  const cached = getFromCache(cacheKey);
+
+  if (cached) {
+    return cached;
+  }
+
+  const url = `https://www.googleapis.com/youtube/v3/search?key=${API_KEY}&channelId=${CHANNEL_ID}&part=snippet,id&order=date&maxResults=${MAX_VIDEOS}`;
+  const res = await fetch(url);
+  const data = await res.json();
+  const videos = data.items.filter(item => item.id.kind === 'youtube#video');
+  saveToCache(cacheKey, videos, CACHE_TTL);
+  return videos;
+}
+
+function formatDate(dateStr) {
+  const date = new Date(dateStr);
+  return date.toLocaleString('id-ID');
+}
+
+async function fetchComments(videoId) {
+  const url = `https://www.googleapis.com/youtube/v3/commentThreads?part=snippet&videoId=${videoId}&maxResults=5&key=${API_KEY}`;
+  try {
     const res = await fetch(url);
     const data = await res.json();
-    return data.items.filter(item => item.id.kind === 'youtube#video');
-  }
-
-  function formatDate(dateStr) {
-    const date = new Date(dateStr);
-    return date.toLocaleString('id-ID');
-  }
-
-  async function fetchComments(videoId) {
-    const url = `https://www.googleapis.com/youtube/v3/commentThreads?part=snippet&videoId=${videoId}&maxResults=5&key=${API_KEY}`;
-    try {
-      const res = await fetch(url);
-      const data = await res.json();
-      const commentsList = document.getElementById('commentsList');
-      commentsList.innerHTML = '';
-      data.items.forEach(item => {
-        const comment = item.snippet.topLevelComment.snippet;
-        const li = document.createElement('li');
-        li.innerHTML = `
-          <img class="avatar" src="${comment.authorProfileImageUrl}" alt="Avatar">
-          <div class="comment-text">
-            <strong>${comment.authorDisplayName}</strong>
-            <div>${comment.textDisplay}</div>
-            <div class="comment-time">${formatDate(comment.publishedAt)}</div>
-          </div>
-        `;
-        commentsList.appendChild(li);
-      });
-    } catch (err) {
-      document.getElementById('commentsList').innerHTML = '<li>Gagal memuat komentar</li>';
-      console.error(err);
-    }
-  }
-
-  async function updateShowcaseSlider() {
-    const videos = await fetchLatestVideos();
-    const wrapper = document.getElementById('showcaseSliderWrapper');
-    wrapper.innerHTML = '';
-    
-    videos.forEach(video => {
-      const videoId = video.id.videoId;
-      const videoTitle = video.snippet.title;
-      const publishedAt = formatDate(video.snippet.publishedAt);
-      
-      const item = document.createElement('div');
-      item.className = 'showcase-item';
-      item.innerHTML = `
-        <iframe src="https://www.youtube.com/embed/${videoId}" frameborder="0" allowfullscreen></iframe>
-        <h3>${videoTitle}</h3>
-        <p>Dipublikasikan: ${publishedAt}</p>
+    const commentsList = document.getElementById('commentsList');
+    commentsList.innerHTML = '';
+    data.items.forEach(item => {
+      const comment = item.snippet.topLevelComment.snippet;
+      const li = document.createElement('li');
+      li.innerHTML = `
+        <img class="avatar" src="${comment.authorProfileImageUrl}" alt="Avatar">
+        <div class="comment-text">
+          <strong>${comment.authorDisplayName}</strong>
+          <div>${comment.textDisplay}</div>
+          <div class="comment-time">${formatDate(comment.publishedAt)}</div>
+        </div>
       `;
-      wrapper.appendChild(item);
+      commentsList.appendChild(li);
     });
+  } catch (err) {
+    document.getElementById('commentsList').innerHTML = '<li>Gagal memuat komentar</li>';
+    console.error(err);
+  }
+}
 
-    setupShowcaseSlider();
+async function updateShowcaseSlider() {
+  const videos = await fetchLatestVideos();
+  const wrapper = document.getElementById('showcaseSliderWrapper');
+  wrapper.innerHTML = '';
+
+  videos.forEach(video => {
+    const videoId = video.id.videoId;
+    const videoTitle = video.snippet.title;
+    const publishedAt = formatDate(video.snippet.publishedAt);
+
+    const item = document.createElement('div');
+    item.className = 'showcase-item';
+    item.innerHTML = `
+      <iframe src="https://www.youtube.com/embed/${videoId}" frameborder="0" allowfullscreen></iframe>
+      <h3>${videoTitle}</h3>
+      <p>Dipublikasikan: ${publishedAt}</p>
+    `;
+    wrapper.appendChild(item);
+  });
+
+  setupShowcaseSlider();
+}
+
+function setupShowcaseSlider() {
+  const wrapper = document.getElementById('showcaseSliderWrapper');
+  const prevBtn = document.getElementById('prevShowcase');
+  const nextBtn = document.getElementById('nextShowcase');
+  const items = wrapper.querySelectorAll('.showcase-item');
+  let currentIndex = 0;
+
+  if (items.length <= 1) {
+    prevBtn.style.display = 'none';
+    nextBtn.style.display = 'none';
+  } else {
+    prevBtn.style.display = 'block';
+    nextBtn.style.display = 'block';
   }
 
-  function setupShowcaseSlider() {
-    const wrapper = document.getElementById('showcaseSliderWrapper');
-    const prevBtn = document.getElementById('prevShowcase');
-    const nextBtn = document.getElementById('nextShowcase');
-    const items = wrapper.querySelectorAll('.showcase-item');
-    let currentIndex = 0;
-
-    if (items.length <= 1) {
-      prevBtn.style.display = 'none';
-      nextBtn.style.display = 'none';
-    } else {
-      prevBtn.style.display = 'block';
-      nextBtn.style.display = 'block';
-    }
-
-    function updateSlider() {
-      const offset = -currentIndex * wrapper.clientWidth;
-      wrapper.style.transform = `translateX(${offset}px)`;
-      wrapper.style.transition = 'transform 0.5s ease';
-    }
-
-    prevBtn.addEventListener('click', () => {
-      if (currentIndex > 0) {
-        currentIndex--;
-        updateSlider();
-      }
-    });
-
-    nextBtn.addEventListener('click', () => {
-      if (currentIndex < items.length - 1) {
-        currentIndex++;
-        updateSlider();
-      }
-    });
-
-    updateSlider();
+  function updateSlider() {
+    const offset = -currentIndex * wrapper.clientWidth;
+    wrapper.style.transform = `translateX(${offset}px)`;
+    wrapper.style.transition = 'transform 0.5s ease';
   }
 
-  async function init() {
-    await fetchChannelStats();
-    await updateShowcaseSlider();
-
-    const videos = await fetchLatestVideos();
-    if (videos.length > 0) {
-      await fetchComments(videos[0].id.videoId);
+  prevBtn.addEventListener('click', () => {
+    if (currentIndex > 0) {
+      currentIndex--;
+      updateSlider();
     }
-  }
+  });
 
-  init();
-  setInterval(init, 7200000); // Refresh setiap 2 jam
+  nextBtn.addEventListener('click', () => {
+    if (currentIndex < items.length - 1) {
+      currentIndex++;
+      updateSlider();
+    }
+  });
+
+  updateSlider();
+}
+
+async function init() {
+  await fetchChannelStats();
+  await updateShowcaseSlider();
+
+  const videos = await fetchLatestVideos();
+  if (videos.length > 0) {
+    await fetchComments(videos[0].id.videoId);
+  }
+}
+
+init();
+setInterval(init, 7200000); // Refresh setiap 2 jam
+
   // setInterval(updateSubscriberCount, 5 * 60 * 1000);
         // Language Data
         const translations = {
