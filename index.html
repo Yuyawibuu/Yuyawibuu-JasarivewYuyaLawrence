@@ -262,14 +262,18 @@
             align-items: center;
         }
 
-        .logo {
-            font-size: 1.8em;
-            font-weight: 700;
-            color: var(--neon-blue);
-            text-shadow: 0 0 8px var(--neon-blue), 0 0 15px var(--neon-purple);
-            text-decoration: none;
-            transition: color 0.5s ease, text-shadow 0.5s ease;
-        }
+    .logo {
+    width: 40px; /* Ukuran diameter lingkaran */
+    height: 40px;
+    border-radius: 50%; /* Membuat gambar bulat */
+    object-fit: cover; /* Memastikan gambar terisi dengan baik */
+    display: block;
+    transition: transform 0.3s ease;
+}
+
+.logo:hover {
+    transform: scale(1.1); /* Efek hover opsional */
+}
 
 
         .nav-links {
