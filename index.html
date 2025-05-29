@@ -1337,14 +1337,15 @@
             <h2 data-lang-key="statsTitle">Statistik Kami</h2>
             <div class="stats-grid">
 <div class="stat-item">
-    <div class="icon"><i class="fas fa-users"></i>594+</div>
-    <div class="number" id="subscriberCount">594+</div>
-    <div class="label" data-lang-key="stat1Label">Pengikut Aktif</div>
+  <div class="icon"><i class="fas fa-users"></i></div>
+  <div class="number" id="subscriberCount">0</div>
+  <div class="label" data-lang-key="stat1Label">Pengikut Aktif</div>
 </div>
+
 <div class="stat-item">
-    <div class="icon"><i class="fas fa-video"></i>79+</div>
-    <div class="number" id="videoCount">79+</div>
-    <div class="label" data-lang-key="stat2Label">Video Review Dibuat</div>
+  <div class="icon"><i class="fas fa-video"></i></div>
+  <div class="number" id="videoCount">0</div>
+  <div class="label" data-lang-key="stat2Label">Video Review Dibuat</div>
 </div>
                 <div class="stat-item">
                     <div class="icon"><i class="fas fa-star"></i></div>
@@ -1594,7 +1595,7 @@
     });
   const API_KEY = 'AIzaSyBgAIn-hKccEoLBdf2bLSfd8QBAUooCdcw';
   const CHANNEL_ID = 'UCEJPX2YG1uR_Lo8mRGwa8GQ';
-  const MAX_VIDEOS = 5; // Jumlah maksimum video yang ditampilkan
+  const MAX_VIDEOS = 5;
 
   async function fetchChannelStats() {
     const url = `https://www.googleapis.com/youtube/v3/channels?part=statistics&id=${CHANNEL_ID}&key=${API_KEY}`;
@@ -1609,7 +1610,7 @@
     const url = `https://www.googleapis.com/youtube/v3/search?key=${API_KEY}&channelId=${CHANNEL_ID}&part=snippet,id&order=date&maxResults=${MAX_VIDEOS}`;
     const res = await fetch(url);
     const data = await res.json();
-    return data.items;
+    return data.items.filter(item => item.id.kind === 'youtube#video');
   }
 
   function formatDate(dateStr) {
@@ -1643,11 +1644,10 @@
     }
   }
 
-  // Fungsi untuk menambahkan video ke slider
   async function updateShowcaseSlider() {
     const videos = await fetchLatestVideos();
     const wrapper = document.getElementById('showcaseSliderWrapper');
-    wrapper.innerHTML = ''; // Kosongkan wrapper terlebih dahulu
+    wrapper.innerHTML = '';
     
     videos.forEach(video => {
       const videoId = video.id.videoId;
@@ -1663,12 +1663,10 @@
       `;
       wrapper.appendChild(item);
     });
-    
-    // Setelah menambahkan video, setup slider kembali
+
     setupShowcaseSlider();
   }
 
-  // SLIDER NAVIGATION
   function setupShowcaseSlider() {
     const wrapper = document.getElementById('showcaseSliderWrapper');
     const prevBtn = document.getElementById('prevShowcase');
@@ -1676,7 +1674,6 @@
     const items = wrapper.querySelectorAll('.showcase-item');
     let currentIndex = 0;
 
-    // Sembunyikan tombol navigasi jika tidak ada video
     if (items.length <= 1) {
       prevBtn.style.display = 'none';
       nextBtn.style.display = 'none';
@@ -1704,25 +1701,22 @@
         updateSlider();
       }
     });
-    
-    // Inisialisasi posisi slider
+
     updateSlider();
   }
 
   async function init() {
     await fetchChannelStats();
     await updateShowcaseSlider();
-    
-    // Ambil video terbaru untuk komentar
+
     const videos = await fetchLatestVideos();
     if (videos.length > 0) {
       await fetchComments(videos[0].id.videoId);
     }
   }
 
-  // Jalankan init dan refresh setiap 5 menit untuk update video baru
   init();
-  setInterval(init, 7200000); // 300000 ms = 5 menit
+  setInterval(init, 7200000); // Refresh setiap 2 jam
   // setInterval(updateSubscriberCount, 5 * 60 * 1000);
         // Language Data
         const translations = {
